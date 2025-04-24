@@ -10,7 +10,7 @@ pluginManagement {
 
 // ADD THIS ENTIRE BLOCK FOR DEPENDENCY REPOSITORIES:
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS) // Recommended setting
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT) // Recommended setting
     repositories {
         google()
         mavenCentral()
