@@ -78,6 +78,35 @@ publishing {
     }
 }
 
+//signing {
+//    sign(publishing.publications)
+//}
+
 signing {
-    sign(publishing.publications)
+    val isJitpackBuild = System.getenv("JITPACK") == "true"
+
+    if (!isJitpackBuild) {
+        // Only attempt to sign if NOT running on JitPack
+        // You might still want local checks if building locally without keys:
+        val keyId = providers.gradleProperty("signing.keyId").orNull
+        val password = providers.gradleProperty("signing.password").orNull
+        val secRingFile = providers.gradleProperty("signing.secretKeyRingFile").orNull
+
+        if (keyId != null && password != null && secRingFile != null) {
+            println("Attempting to sign publications (local build with keys)...")
+            sign(publishing.publications)
+        } else {
+            println("Skipping signing: Local signing properties not fully configured.")
+            // Disable signing tasks explicitly if keys aren't set locally
+            tasks.withType<Sign>().configureEach {
+                enabled = false
+            }
+        }
+    } else {
+        println("Skipping signing: JitPack build environment detected.")
+        // Explicitly disable signing tasks when on JitPack
+        tasks.withType<Sign>().configureEach {
+            enabled = false
+        }
+    }
 }
